@@ -1,4 +1,4 @@
-<?php require_once('funcs.php'); ?>
+<?php require_once 'includes/funcs.php'; ?>
 
 <!-- Main[Start] -->
 <div class="min-h-screen w-5/6 flex flex-col flex-1 items-center bg-[#F1F6F5] rounded-lg">

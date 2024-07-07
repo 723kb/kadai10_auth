@@ -1,4 +1,4 @@
 .DS_Store
-/node_modules
-db_conn.php
+node_modules/
+src/php/includes/db_conn.php
 SQL
