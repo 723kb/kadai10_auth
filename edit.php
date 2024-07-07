@@ -1,6 +1,6 @@
 <?php
-require_once 'includes/funcs.php';
-require_once 'includes/db_conn.php';
+require_once('funcs.php');
+require_once('db_conn.php');
 
 // DB接続
 $pdo = db_conn();
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!-- 以下HTMLの表示 -->
 
 <!-- header -->
-<?php include './includes/head.php'; ?>
+<?php include 'head.php'; ?>
 
 <!-- Main[Start] -->
 <div class="min-h-fit w-5/6 flex flex-col flex-1 items-center bg-[#F1F6F5] rounded-lg">
@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </body>
 
 <!-- edit.php用のjsファイルを読み込み -->
-<script src="../js//edit.js"></script>
+<script src="js/edit.js"></script>
 
 <!-- footer -->
-<?php include './includes/foot.php'; ?>
+<?php include 'foot.php'; ?>

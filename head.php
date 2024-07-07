@@ -5,17 +5,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EchoBoard</title>
-  <link href="../css/output.css" rel="stylesheet">
+  <link href="css/output.css" rel="stylesheet">
   <!-- font-awesome 読み込み -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <!-- Google Fonts 読み込み -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1+Code&family=Mochiy+Pop+One&display=swap" rel="stylesheet">
-    <!-- ファビコン -->
-    <link rel="shortcut icon" href="../img/favicon.ico" type="image/x-icon"> 
+  <!-- ファビコン -->
+  <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
   <!-- アイコン -->
-  <link rel="apple-touch-icon" href="../img/apple-touch-icon-180x180.png" sizes="180x180"> 
+  <link rel="apple-touch-icon" href="img/apple-touch-icon-180x180.png" sizes="180x180">
 </head>
 
 <body class="min-h-screen bg-[#B5D9DB] flex flex-col justify-center items-center font-m-plus-1">

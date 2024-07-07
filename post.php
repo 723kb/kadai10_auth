@@ -1,6 +1,6 @@
 <?php
-require_once 'includes/funcs.php';
-require_once 'includes/db_conn.php';
+require_once('funcs.php');
+require_once('db_conn.php');
 
 // DB接続
 $pdo = db_conn();
