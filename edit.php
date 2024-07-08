@@ -1,6 +1,8 @@
 <?php
+session_start();
 require_once('funcs.php');
 require_once('db_conn.php');
+loginCheck ();
 
 // DB接続
 $pdo = db_conn();
@@ -14,7 +16,7 @@ if ($id === null) {
   exit('編集対象のIDが指定されていません。');
 }
 // 編集したい内容をデータベースから取得
-$stmt = $pdo->prepare('SELECT * FROM kadai09_msg_table WHERE id = :id');
+$stmt = $pdo->prepare('SELECT * FROM kadai10_msg_table WHERE id = :id');
 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch();
@@ -29,10 +31,9 @@ $error_message = ''; // エラーメッセージ初期化
 // POSTリクエスト処理 ユーザーが編集フォームを送信した時に実行
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (
-    !isset($_POST['name']) || $_POST['name'] === '' ||
     !isset($_POST['message']) || $_POST['message'] === ''
   ) {
-    $error_message = '名前または内容が入力されていません';
+    $error_message = '内容が入力されていません';
   } elseif (mb_strlen($_POST['message']) > 140) {
     $error_message = '内容は140文字以内で入力してください';
   }
@@ -41,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   if (empty($error_message)) {
     // POSTデータを取得
     $id = $_POST['id'];
-    $name = $_POST['name'];
     $message = $_POST['message'];
     $picture = null;  // デフォルト値 条件分岐で画像の更新があるか対応
 
@@ -50,12 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // 更新SQL作成
     if ($picture !== null) {  // 画像が新たにアップされた場合 名前、メッセージ、画像、更新日時を更新
-      $stmt = $pdo->prepare('UPDATE kadai09_msg_table SET name = :name, message = :message, picture = :picture, updated_at = now() WHERE id = :id');
+      $stmt = $pdo->prepare('UPDATE kadai10_msg_table SET message = :message, picture = :picture, updated_at = now() WHERE id = :id');
       $stmt->bindValue(':picture', $picture, PDO::PARAM_LOB);
     } else {  // 画像がアップされなかった場合 名前、メッセージ、更新日時を更新 既存の画像を保持
-      $stmt = $pdo->prepare('UPDATE kadai09_msg_table SET name = :name, message = :message, updated_at = now() WHERE id = :id');
+      $stmt = $pdo->prepare('UPDATE kadai10_msg_table SET message = :message, updated_at = now() WHERE id = :id');
     }  // 共通の処理
-    $stmt->bindValue(':name', $name, PDO::PARAM_STR);
     $stmt->bindValue(':message', $message, PDO::PARAM_STR);
     $stmt->bindValue(':id', $id, PDO::PARAM_INT);
     $stmt->execute();
@@ -64,6 +63,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     redirect('index.php');
   }
 }
+
+// ユーザー名の取得（セッションから取得する処理が必要）
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 ?>
 
 <!-- 以下HTMLの表示 -->
@@ -78,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <input type="hidden" name="id" value="<?= h($row['id']) ?>">
     <div class="w-full flex flex-col justify-center m-2">
       <div class="p-4">
-        <label for="name" class="text-sm sm:text-base md:text-lg lg:text-xl">名前：</label>
-        <input type="text" name="name" id="name" value="<?= h($row['name']) ?>" class="w-full h-11 p-2 border rounded-md">
+      <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">名前：</label>
+      <p  id="username" class="w-full h-11 p-2 border rounded-md"><?= h($username) ?></p>
       </div>
       <div class="p-4">
         <label for="message" class="text-sm sm:text-base md:text-lg lg:text-xl">内容：</label>

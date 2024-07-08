@@ -23,3 +23,24 @@ function handleFileUpload($fileFieldName)
     }
     return null;
 }
+
+//SQLエラー
+function sql_error($stmt)
+{
+    //execute（SQL実行時にエラーがある場合）
+    $error = $stmt->errorInfo();
+    exit('SQLError:' . $error[2]);
+}
+
+// ログインチェク処理 loginCheck()
+// 以下、セッションID持ってたら、ok
+// 持ってなければ、閲覧できない処理にする。
+// セッションID持っていない or 持っててもサーバーの値と違う場合
+function loginCheck()
+{
+    if (!isset($_SESSION['chk_ssid']) || $_SESSION['chk_ssid'] !== session_id()) {
+        exit('LOGIN ERROR');
+    }
+    session_regenerate_id(true);
+    $_SESSION['chk_ssid'] = session_id();
+}

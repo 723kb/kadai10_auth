@@ -1,6 +1,8 @@
 <?php
+session_start();
 require_once('funcs.php');
 require_once('db_conn.php');
+loginCheck ();
 
 // DB接続
 $pdo = db_conn();
@@ -14,7 +16,7 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $id = $_GET['id'];
 
 // テーブルからデータ取得
-$stmt = $pdo->prepare('SELECT * FROM kadai09_msg_table WHERE id = :id');
+$stmt = $pdo->prepare('SELECT * FROM kadai10_msg_table WHERE id = :id');
 $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -28,7 +30,7 @@ if (!$row) {
 // POSTデータを受け取った場合(削除ボタンが押された時)に実行
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // 削除SQL作成
-  $stmt = $pdo->prepare('DELETE FROM kadai09_msg_table WHERE id = :id');
+  $stmt = $pdo->prepare('DELETE FROM kadai10_msg_table WHERE id = :id');
   $stmt->bindValue(':id', $id, PDO::PARAM_INT);
   $status = $stmt->execute();
 
