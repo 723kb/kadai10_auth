@@ -11,18 +11,13 @@ define('ADMIN_PASSWORD', '1111');
 $pdo = db_conn();
 
 // POSTデータの取得
+$lid = isset($_POST['lid']) ? h($_POST['lid']) : '';
 $username = isset($_POST['username']) ? h($_POST['username']) : '';
 $email = isset($_POST['email']) ? h($_POST['email']) : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 $pass_confirm = isset($_POST['pass_confirm']) ? $_POST['pass_confirm'] : '';
 $user_type = isset($_POST['user_type']) ? $_POST['user_type'] : 'normal'; // ユーザータイプのデフォルトは一般ユーザー
 $admin_password = isset($_POST['admin_password']) ? $_POST['admin_password'] : '';
-
-// ユーザータイプが管理者の場合、管理者パスワードを取得する
-// $admin_password = '';
-// if ($user_type === 'admin') {
-//     $admin_password = isset($_POST['admin_password']) ? $_POST['admin_password'] : '';
-// }
 
 // パスワードと確認用パスワードが一致しているか確認する
 if ($password !== $pass_confirm) {
@@ -41,7 +36,8 @@ if ($user_type === 'admin' && $admin_password === ADMIN_PASSWORD) {
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
 // ユーザー情報の登録
-$stmt = $pdo->prepare("INSERT INTO kadai10_user_table (username, email, password, kanri_flg, life_flg) VALUES (:username, :email, :password, :kanri_flg, :life_flg)");
+$stmt = $pdo->prepare("INSERT INTO kadai10_user_table (lid,  username, email, password, kanri_flg, life_flg) VALUES (:lid, :username, :email, :password, :kanri_flg, :life_flg)");
+$stmt->bindValue(':lid', $lid, PDO::PARAM_STR);
 $stmt->bindValue(':username', $username, PDO::PARAM_STR);
 $stmt->bindValue(':email', $email, PDO::PARAM_STR);
 $stmt->bindValue(':password', $password_hash, PDO::PARAM_STR);

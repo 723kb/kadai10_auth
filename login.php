@@ -16,8 +16,8 @@
     <form name="form1" action="login_act.php" method="post" class="w-full flex flex-col justify-center items-center m-2">
         <div class="w-full flex flex-col justify-center m-2">
             <div class="p-4">
-                <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">ユーザー名：</label>
-                <input type="text" name="username" id="username" placeholder="user01" class="w-full h-11 p-2 border rounded-md">
+                <label for="lid" class="text-sm sm:text-base md:text-lg lg:text-xl">ログインID：</label>
+                <input type="text" name="lid" id="lid" placeholder="example123" required class="w-full h-11 p-2 border rounded-md">
             </div>
             <div class="p-4">
                 <label for="password" class="text-sm sm:text-base md:text-lg lg:text-xl">PASSWORD：</label>
@@ -29,8 +29,8 @@
         </div>
     </form>
     <div class="navbar-header">
-            <a class="navbar-brand" href="user.php">新規登録</a>
-        </div>
+        <a class="navbar-brand" href="user.php">新規登録</a>
+    </div>
 </div>
 <!-- Main[End] -->
 <?php include 'foot.php'; ?> <!-- フッター -->

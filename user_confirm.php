@@ -3,6 +3,7 @@ include 'head.php';
 require_once('funcs.php');
 
 // POSTデータの取得
+$lid = isset($_POST['lid']) ? h($_POST['lid']) : '';
 $username = isset($_POST['username']) ? h($_POST['username']) : '';
 $email = isset($_POST['email']) ? h($_POST['email']) : '';
 $password_display = '********'; // パスワードは表示しないため、ダミーの文字列を表示する
@@ -16,7 +17,11 @@ $admin_password = $_POST['admin_password'];
   <h2 class="text-lg md:text-xl lg:text-2xl mb-4">入力内容の確認</h2>
   <div class="w-full flex flex-col justify-center items-start m-2 p-4 border rounded-md bg-white">
     <div class="p-4">
-      <label class="text-sm sm:text-base md:text-lg lg:text-xl">ユーザー名：</label>
+      <label for="lid" class="text-sm sm:text-base md:text-lg lg:text-xl">ログインID：</label>
+      <p class="w-full h-11 p-2 border rounded-md"><?php echo $lid; ?></p>
+    </div>
+    <div class="p-4">
+      <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">ユーザー名：</label>
       <p class="w-full h-11 p-2 border rounded-md"><?php echo $username; ?></p>
     </div>
     <div class="p-4">
@@ -38,6 +43,7 @@ $admin_password = $_POST['admin_password'];
   </div>
   <!-- 隠しフィールドでデータを登録 -->
   <form action="user_submit.php" method="post" class="w-full flex flex-col justify-center items-center m-2">
+    <input type="hidden" name="lid" value="<?php echo h($_POST['lid']); ?>">
     <input type="hidden" name="username" value="<?php echo h($_POST['username']); ?>">
     <input type="hidden" name="email" value="<?php echo h($_POST['email']); ?>">
     <input type="hidden" name="password" value="<?php echo h($_POST['password']); ?>">

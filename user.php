@@ -4,9 +4,13 @@
 <div class="max-h-screen w-5/6 flex flex-col flex-1 items-center bg-[#F1F6F5] rounded-lg">
   <form action="user_confirm.php" method="post" class="w-full flex flex-col justify-center items-center m-2">
     <div class="w-full flex flex-col justify-center m-2">
+    <div class="p-4">
+        <label for="lid" class="text-sm sm:text-base md:text-lg lg:text-xl">ログインID：</label>
+        <input type="text" name="lid" id="lid" placeholder="example123" required class="w-full h-11 p-2 border rounded-md">
+      </div>
       <div class="p-4">
         <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">ユーザー名：</label>
-        <input type="text" name="username" id="lid" placeholder="テストちゃん" required class="w-full h-11 p-2 border rounded-md">
+        <input type="text" name="username" id="username" placeholder="テストちゃん" required class="w-full h-11 p-2 border rounded-md">
       </div>
       <div class="p-4">
         <label for="email" class="text-sm sm:text-base md:text-lg lg:text-xl">EMAIL：</label>

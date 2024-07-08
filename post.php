@@ -20,6 +20,14 @@
     exit();
   }
 
+  // ログインしているユーザーのusernameを取得
+  $stmt = $pdo->prepare("SELECT username FROM kadai10_user_table WHERE lid = :lid");
+  $stmt->bindValue(':lid', $_SESSION['lid'], PDO::PARAM_STR);
+  $stmt->execute();
+  $user = $stmt->fetch(PDO::FETCH_ASSOC);
+  $username = $user['username'];
+
+
   // データ登録処理
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {  // POSTで送信されたか確認
     if (
@@ -103,7 +111,7 @@
       echo '<button type="button" onclick="location.href=\'edit.php?id=' . $row['id'] . '\'" class="w-1/4 border-2 rounded-md border-[#93CCCA] md:border md:border-slate-200  text-[#93CCCA] md:bg-transparent md:text-inherit md:hover:bg-[#93CCCA] p-2 m-2"><i class="fas fa-edit"></i></button>';
     }
     // ログインしているユーザーが投稿者である場合、または管理者の場合に削除ボタンを表示
-    if ($_SESSION['username'] === $row['name'] || $_SESSION['kanri'] === 1)  {
+    if ($_SESSION['username'] === $row['name'] || $_SESSION['kanri'] === 1) {
       echo '<button type="button" onclick="location.href=\'delete.php?id=' . $row['id'] . '\'" class="w-1/4 border-2 rounded-md border-[#B33030] md:border md:border-slate-200  text-[#B33030] md:bg-transparent md:text-inherit md:hover:bg-[#B33030] md:hover:text-white p-2 m-2"><i class="fas fa-trash-alt"></i></button>';
     }
     echo '</div>';

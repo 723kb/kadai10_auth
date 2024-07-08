@@ -2,7 +2,7 @@
 session_start();
 
 //POST値を受け取る
-$username = $_POST['username'];
+$lid = $_POST['lid'];
 $password = $_POST['password'];
 
 //1.  DB接続します
@@ -11,9 +11,9 @@ require_once('db_conn.php');
 $pdo = db_conn();
 
 //2. データ登録SQL作成
-// kadai10_user_tableに、usernameとpasswordがあるか確認する。
-$stmt = $pdo->prepare("SELECT * FROM kadai10_user_table WHERE username=:username AND life_flg=1");
-$stmt->bindValue(':username', $username, PDO::PARAM_STR);
+// kadai10_user_tableに、lidとpasswordがあるか確認する。
+$stmt = $pdo->prepare("SELECT * FROM kadai10_user_table WHERE lid=:lid AND life_flg=1");
+$stmt->bindValue(':lid', $lid, PDO::PARAM_STR);
 $status = $stmt->execute();
 
 //3. SQL実行時にエラーがある場合STOP
@@ -28,7 +28,8 @@ $pw = password_verify($password, $val["password"]);
 if ($pw) {
     //Login成功時
     $_SESSION["chk_ssid"]  = session_id();
-    $_SESSION["username"]  = $val['username'];
+    $_SESSION["lid"]  = $val['lid'];
+    $_SESSION['username'] = $val['username'];
     $_SESSION["kanri"] = $val['kanri_flg']; // 管理者フラグをセッションに保存
     //Login成功時（index.phpへ）
     redirect("index.php");
