@@ -13,6 +13,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
     <p id="username" class="text-center">ユーザー名： <?= h($username) ?> でログイン中</p>
     <a class="text-center my-2" href="logout.php">ログアウト</a>
   </div>
+
   <!-- ShowSearchButton -->
   <button id="showSearchButton" class="fixed top-6 right-4 bg-[#7895B2] hover:bg-[#AAC4FF] text-white hover:text-slate-700 py-2 px-4 rounded-full shadow-md">
     <i class="fas fa-search"></i>
@@ -21,10 +22,6 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
   <!-- Posting area[Start] -->
   <form method="POST" action="post.php" enctype="multipart/form-data" id="myForm" class="w-full flex flex-col justify-center items-center m-2">
     <div class="w-full flex flex-col justify-center m-2">
-      <!-- <div class="p-4">
-        <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">名前：</label>
-        <p id="username" class="w-full h-11 p-2 border rounded-md"><?= h($username) ?></p>
-      </div> -->
       <div class="p-4">
         <label for="message" class="text-sm sm:text-base md:text-lg lg:text-xl">内容：</label>
         <textArea name="message" id="message" placeholder="140字以内で内容を入力してください。" rows="4" cols="40" class="w-full p-2 border rounded-md"></textArea>
@@ -62,7 +59,6 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
     </div>
   </form>
   <!-- Search area[End] -->
-
   <!-- Display area[Start] -->
   <div class="w-full m-4 border-t flex flex-col items-center">
     <h2 class="text-md sm:text-lg md:text-xl lg:text-2xl text-center my-4 font-mochiy-pop-one">Posts</h2>

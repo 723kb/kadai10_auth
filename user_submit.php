@@ -1,10 +1,13 @@
-<?php 
-include 'head.php';
+<?php include 'head.php'; ?> <!-- ヘッダー -->
+
+<div class="h-[60vh] w-[60vw] flex flex-col justify-center items-center bg-[#F1F6F5] rounded-lg mt-auto p-4">
+
+<?php
 session_start();
 require_once('funcs.php');
 require_once('db_conn.php');
 
-// 管理者パスワードの定数を定義
+// 管理者パスワードの定数を定義 普通はセキュリティ上こんな風にはしない
 define('ADMIN_PASSWORD', '1111');
 
 // DB接続
@@ -45,26 +48,30 @@ $stmt->bindValue(':kanri_flg', $kanri_flg, PDO::PARAM_INT); // 管理者フラ�
 $stmt->bindValue(':life_flg', 1, PDO::PARAM_INT); // life_flgはデフォルトで1を設定
 $status = $stmt->execute();
 
-  if ($status === true) {
+if ($status === true) {
     if ($kanri_flg === 1) {
-        $message = "管理者として登録しました。";
+        $message = "管理者として登録しました。<br>3秒後に遷移します。";
     } else {
-        $message = "一般ユーザーとして登録しました。";
+        $message = "一般ユーザーとして登録しました。<br>3秒後に遷移します。";
     }
-    
+
     // メッセージを表示し、3秒後にリダイレクトする
-    echo "<p>" . $message . "</p>";
-    echo "<script>
-            setTimeout(function() {
-                window.location.href = 'login.php';
-            }, 3000);
-          </script>";
+    echo "<p class='my-auto text-center'>" . $message . "</p>";
+    // echo "<script>
+    //         setTimeout(function() {
+    //             window.location.href = 'login.php';
+    //         }, 3000);
+    //       </script>";
 } else {
     // 登録失敗時の処理
-    echo "<p>ユーザー登録に失敗しました。</p>";
+    echo "<p class='my-auto text-center>ユーザー登録に失敗しました。</p>";
     echo "<script>
             setTimeout(function() {
                 window.location.href = 'user.php';
             }, 3000);
           </script>";
 }
+?>
+</div>
+
+<?php include 'foot.php'; ?> <!-- フッター -->
