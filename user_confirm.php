@@ -42,7 +42,7 @@ $admin_password = $_POST['admin_password'];
     </div>
   </div>
   <!-- 隠しフィールドでデータを登録 -->
-  <form action="user_submit.php" method="post" class="w-full flex flex-col justify-center items-center m-2">
+  <form action="user_submit.php" method="post" class="w-full flex flex-col justify-center sm:items-center m-2">
     <input type="hidden" name="lid" value="<?php echo h($_POST['lid']); ?>">
     <input type="hidden" name="username" value="<?php echo h($_POST['username']); ?>">
     <input type="hidden" name="email" value="<?php echo h($_POST['email']); ?>">
@@ -50,9 +50,9 @@ $admin_password = $_POST['admin_password'];
     <input type="hidden" name="pass_confirm" value="<?php echo h($_POST['pass_confirm']); ?>">
     <input type="hidden" name="user_type" value="<?php echo h($_POST['user_type']); ?>">
     <input type="hidden" name="admin_password" value="<?php echo h($_POST['admin_password']); ?>">
-    <div class="w-full flex flex-row justify-around items-center m-2">
-      <button type="button" onclick="history.back()" class="w-1/4 border-2 rounded-md border-[#B33030] text-[#B33030] md:bg-transparent md:hover:bg-[#B33030] md:hover:text-white p-2 m-2">戻る</button>
-      <button type="submit" class="w-1/4 border-2 rounded-md border-[#4CAF50] text-[#4CAF50] md:bg-transparent md:hover:bg-[#4CAF50] md:hover:text-white p-2 m-2">確認して登録</button>
+    <div class="sm:w-full flex flex-col sm:flex-row justify-center sm:justify-around items-center m-2 p-2">
+      <button type="button" onclick="history.back()" class="w-3/4 sm:w-1/4 border-2 rounded-md border-[#B33030] text-[#B33030] md:bg-transparent md:hover:bg-[#B33030] md:hover:text-white transition-colors duration-300 p-2 m-2">戻る</button>
+      <button type="submit" class="w-3/4 sm:w-1/4 border-2 rounded-md border-[#8DB1CF] text-slate-600 md:bg-transparent md:hover:bg-[#8DB1CF] md:hover:text-white transition-colors duration-300 p-2 m-2">登録</button>
     </div>
   </form>
 </div>

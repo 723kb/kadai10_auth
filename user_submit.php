@@ -57,11 +57,11 @@ if ($status === true) {
 
     // メッセージを表示し、3秒後にリダイレクトする
     echo "<p class='my-auto text-center'>" . $message . "</p>";
-    // echo "<script>
-    //         setTimeout(function() {
-    //             window.location.href = 'login.php';
-    //         }, 3000);
-    //       </script>";
+    echo "<script>
+            setTimeout(function() {
+                window.location.href = 'login.php';
+            }, 3000);
+          </script>";
 } else {
     // 登録失敗時の処理
     echo "<p class='my-auto text-center>ユーザー登録に失敗しました。</p>";

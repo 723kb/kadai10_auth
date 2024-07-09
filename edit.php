@@ -109,8 +109,8 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
         <!-- else追加→既存画像なしでもimg要素を作成→jsでpreviewを操作できる -->
       </div>
       <div class="w-full mt-4 flex justify-around">
-        <button type="button" onclick="location.href='index.php'" class="w-1/4 border border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] p-2 m-2"><i class="fas fa-long-arrow-alt-left"></i></button>
-        <button type="submit" class="w-1/4 border border-slate-200 rounded-md py-3 px-6 bg-[#93CCCA] md:bg-transparent md:hover:bg-[#93CCCA] p-2 m-2"><i class="fas fa-check-circle"></i></button>
+        <button type="button" onclick="location.href='index.php'" class="w-1/4 border border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] transition-colors duration-300 p-2 m-2"><i class="fas fa-long-arrow-alt-left"></i></button>
+        <button type="submit" class="w-1/4 border border-slate-200 rounded-md py-3 px-6 bg-[#93CCCA] md:bg-transparent md:hover:bg-[#93CCCA] transition-colors duration-300 p-2 m-2"><i class="fas fa-check-circle"></i></button>
       </div>
     </div>
   </form>
