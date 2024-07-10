@@ -1,14 +1,13 @@
 <?php
-session_start();
-require_once('funcs.php');
+session_start();  // セッション開始
+require_once('funcs.php');  // 関数群の呼び出し
 require_once('db_conn.php');
-loginCheck ();
+loginCheck ();  // ログインチェック
 
 // DB接続
 $pdo = db_conn();
 
-// ユーザーが編集ページにアクセスした時に実行
-// GETでidを取得
+// ユーザーが編集ページにアクセスした時にGETでidを取得
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 
 // idが指定されていない場合のエラーハンドリング
@@ -38,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $error_message = '内容は140文字以内で入力してください';
   }
 
-  // エラーがなければ更新処理などを実行する
+  // エラーがなければ更新処理を実行する
   if (empty($error_message)) {
     // POSTデータを取得
     $id = $_POST['id'];
@@ -49,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $picture = handleFileUpload('picture');
 
     // 更新SQL作成
-    if ($picture !== null) {  // 画像が新たにアップされた場合 名前、メッセージ、画像、更新日時を更新
+    if ($picture !== null) {  // 画像が新たにアップされた場合 メッセージ、画像、更新日時を更新
       $stmt = $pdo->prepare('UPDATE kadai10_msg_table SET message = :message, picture = :picture, updated_at = now() WHERE id = :id');
       $stmt->bindValue(':picture', $picture, PDO::PARAM_LOB);
     } else {  // 画像がアップされなかった場合 名前、メッセージ、更新日時を更新 既存の画像を保持
@@ -64,13 +63,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   }
 }
 
-// ユーザー名の取得（セッションから取得する処理が必要）
+// ユーザー名の取得(アカウントに登録された名前を使うので、セッションから取得する処理が必要)
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 ?>
 
 <!-- 以下HTMLの表示 -->
 
-<!-- header -->
+<!-- Header -->
 <?php include 'head.php'; ?>
 
 <!-- Main[Start] -->
@@ -81,6 +80,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
     <div class="w-full flex flex-col justify-center m-2">
       <div class="p-4">
       <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">名前：</label>
+      <!-- 取得したユーザー名を表示 -->
       <p  id="username" class="w-full h-11 p-2 border rounded-md"><?= h($username) ?></p>
       </div>
       <div class="p-4">
@@ -122,5 +122,5 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
 <!-- edit.php用のjsファイルを読み込み -->
 <script src="js/edit.js"></script>
 
-<!-- footer -->
+<!-- Footer -->
 <?php include 'foot.php'; ?>

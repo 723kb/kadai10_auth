@@ -1,10 +1,12 @@
-<?php include 'head.php'; ?> <!-- ヘッダー -->
+<!-- Header -->
+<?php include 'head.php'; ?>
 
+<!-- Main[Start] -->
 <div class="h-[60vh] w-[60vw] flex flex-col justify-center items-center bg-[#F1F6F5] rounded-lg mt-auto p-4">
 
 <?php
-session_start();
-require_once('funcs.php');
+session_start();  // セッション開始
+require_once('funcs.php');  // 関数群の呼び出し
 require_once('db_conn.php');
 
 // 管理者パスワードの定数を定義 普通はセキュリティ上こんな風にはしない
@@ -22,7 +24,7 @@ $pass_confirm = isset($_POST['pass_confirm']) ? $_POST['pass_confirm'] : '';
 $user_type = isset($_POST['user_type']) ? $_POST['user_type'] : 'normal'; // ユーザータイプのデフォルトは一般ユーザー
 $admin_password = isset($_POST['admin_password']) ? $_POST['admin_password'] : '';
 
-// パスワードと確認用パスワードが一致しているか確認する
+// パスワードと確認用パスワードが一致しているか確認
 if ($password !== $pass_confirm) {
     // 一致しない場合はエラーメッセージを表示して終了
     echo "パスワードと確認用パスワードが一致しません。";
@@ -38,7 +40,7 @@ if ($user_type === 'admin' && $admin_password === ADMIN_PASSWORD) {
 // パスワードのハッシュ化
 $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
-// ユーザー情報の登録
+// データベースにユーザー情報登録
 $stmt = $pdo->prepare("INSERT INTO kadai10_user_table (lid,  username, email, password, kanri_flg, life_flg) VALUES (:lid, :username, :email, :password, :kanri_flg, :life_flg)");
 $stmt->bindValue(':lid', $lid, PDO::PARAM_STR);
 $stmt->bindValue(':username', $username, PDO::PARAM_STR);
@@ -74,4 +76,5 @@ if ($status === true) {
 ?>
 </div>
 
-<?php include 'foot.php'; ?> <!-- フッター -->
+<!-- Footer -->
+<?php include 'foot.php'; ?>

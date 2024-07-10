@@ -1,14 +1,14 @@
-<?php if (!$is_logged_in) : 
-      $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === session_id();?>
+<!-- index.phpでis_logged_inログインチェックした結果falseだった(ログインしていない)場合に以下表示 -->
+<?php if (!$is_logged_in) : ?>
 
   <div class="h-[90vh] w-5/6 flex flex-col flex-1 items-center bg-[#F1F6F5] rounded-lg">
-  <div class="w-full flex flex-col justify-center">
-    <p class="text-center m-2 p-2">ログインすると投稿できます。<br class="sm:hidden">アカウントの作成は新規登録から！</p>
-    <div class="sm:w-full flex flex-col sm:flex-row justify-center sm:justify-around items-center m-2 p-2 sm:pb-4">
-      <button onclick="location.href='user.php'" class="w-3/4 sm:w-1/4 border-2 rounded-md border-[#8DB1CF] text-slate-600 md:bg-transparent md:hover:bg-[#8DB1CF] md:hover:text-white transition-colors duration-300 p-2 m-2">新規登録</button>
-      <button onclick="location.href='login.php'" class="w-3/4 sm:w-1/4 border-2 rounded-md border-[#4CAF50] text-[#4CAF50] md:bg-transparent md:hover:bg-[#4CAF50] md:hover:text-white transition-colors duration-300 p-2 m-2">ログイン</button>
+    <div class="w-full flex flex-col justify-center">
+      <p class="text-center m-2 p-2">ログインすると投稿できます。<br class="sm:hidden">アカウントの作成は新規登録から！</p>
+      <div class="sm:w-full flex flex-col-reverse sm:flex-row justify-center sm:justify-around items-center m-2 p-2 sm:pb-4">
+        <button onclick="location.href='user.php'" class="w-2/3 sm:w-1/3 md:w-1/4 border-2 rounded-md border-[#8DB1CF] text-slate-800 md:text-slate-600 bg-[#8DB1CF] md:bg-transparent md:hover:bg-[#8DB1CF] md:hover:text-white transition-colors duration-300 p-2 m-2">新規登録</button>
+        <button onclick="location.href='login.php'" class="w-2/3 sm:w-1/3 md:w-1/4 border-2 rounded-md border-[#4CAF50] text-white md:text-[#4CAF50] bg-[#4CAF50] md:bg-transparent md:hover:bg-[#4CAF50] md:hover:text-white transition-colors duration-300 p-2 m-2">ログイン</button>
+      </div>
     </div>
-  </div>
   <?php endif ?>
 
   <!-- Posts[start] -->
@@ -20,20 +20,22 @@
     if (session_status() === PHP_SESSION_NONE) {
       session_start();
     }
-    require_once('funcs.php');
+    require_once('funcs.php');  // 関数群の呼び出し
     require_once('db_conn.php');
+    // ログインチェック loginCheck ();だとログインしてない人は閲覧できないのでここでは書かない
+    $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === session_id();
 
     // DB接続
     $pdo = db_conn();
 
     // ログインしているユーザーの情報を取得
-    $username = '';
-    if ($is_logged_in && isset($_SESSION['lid'])) {
+    $username = '';  // usernameの初期化
+    if ($is_logged_in && isset($_SESSION['lid'])) {  // ログインしていてlidがある場合
       $stmt = $pdo->prepare("SELECT username FROM kadai10_user_table WHERE lid = :lid");
       $stmt->bindValue(':lid', $_SESSION['lid'], PDO::PARAM_STR);
       $stmt->execute();
       $user = $stmt->fetch(PDO::FETCH_ASSOC);
-      if ($user && isset($user['username'])) {
+      if ($user && isset($user['username'])) {  // $userが存在してusernameキーがあれば変数に格納
         $username = $user['username'];
       }
     }
@@ -41,7 +43,7 @@
     // データ登録処理
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {  // POSTで送信されたか確認
       if (
-        // $_POST['name']$_POST['message']がセットされていないor空文字(=未入力)ならtrue
+        // $_POST['message']がセットされていないor空文字(=未入力)ならtrue
         !isset($_POST['message']) || $_POST['message'] === ''
       ) { // 上記がtrueならエラーを出力
         exit('内容が入力されていません');
@@ -52,7 +54,8 @@
         exit('内容は140文字以内で入力してください');
       }
 
-      $name = isset($_SESSION['username']) ? $_SESSION['username'] : '名無しさん'; // セッションから名前を取得、未設定の場合はデフォルトで「名無しさん」
+       // セッションから名前を取得、未設定の場合はデフォルトで「名無しさん」
+      $name = isset($_SESSION['username']) ? $_SESSION['username'] : '名無しさん';
       $message = $_POST['message'];
       $picture = null;  // $pictureの初期化
 

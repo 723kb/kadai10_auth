@@ -1,24 +1,27 @@
 <?php
-session_start();
-require_once('funcs.php');
+session_start();  // セッション開始
+require_once('funcs.php');  // 関数群の呼び出し
 
-// ログイン状態をチェック
+// ログインチェック loginCheck ();だとログインしてない人は閲覧できないのでここでは書かない
 $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === session_id();
 ?>
 
-<?php include 'head.php'; ?> <!-- ヘッダー -->
+<!-- Header -->
+<?php include 'head.php'; ?>
 
-<?php if ($is_logged_in): ?>
-    <?php 
+<!-- ログインチェックがtrueだった場合に入力検索エリアを表示 -->
+<?php if ($is_logged_in) : ?>
+    <?php
     // セッションIDの再生成
     session_regenerate_id(true);
     $_SESSION['chk_ssid'] = session_id();
-    
-    include 'post_form.php'; ?> <!-- 入力検索エリア（ログインユーザーのみ） -->
+
+    include 'post_form.php'; ?>
 <?php endif; ?>
 
-<?php include 'post.php'; ?> <!-- 表示エリア（全ユーザー） -->
-
-<?php include 'foot.php'; ?> <!-- フッター -->
-
-<script src="js/app.js"></script> <!-- post.php/post_form.php部分のjs -->
+<!-- 表示エリア（全ユーザー） -->
+<?php include 'post.php'; ?>
+<!-- Footer -->
+<?php include 'foot.php'; ?>
+<!-- post.php/post_form.php部分のjs -->
+<script src="js/app.js"></script>

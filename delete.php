@@ -1,8 +1,8 @@
 <?php
-session_start();
-require_once('funcs.php');
+session_start();  // セッション開始
+require_once('funcs.php');  // 関数群の呼び出し
 require_once('db_conn.php');
-loginCheck ();
+loginCheck ();  // ログインチェック
 
 // DB接続
 $pdo = db_conn();
@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!-- 以下HTMLの表示 -->
 
-<!-- header -->
+<!-- Header -->
 <?php include 'head.php'; ?>
 
 <!-- Main[Start] -->
@@ -62,7 +62,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <p class="mt-2"><strong class="text-base sm:text-lg lg:text-xl">投稿：</strong><?= h($row['date']) ?></p>
   </div>
   <!-- Form[Start] -->
-  <form action="" method="POST" class="w-full my-4 flex justify-around">
+  <!-- 削除確認アラート追加 -->
+  <form action="" method="POST" class="w-full my-4 flex justify-around" onsubmit="return confirm('本当に削除しますか？');">
     <input type="hidden" name="id" value="<?= $id ?>">
     <button type="button" onclick="location.href='index.php'" class="w-1/4 border border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] transition-colors duration-300 p-2 m-2"><i class="fas fa-long-arrow-alt-left"></i></button>
     <button type="submit" class="w-1/4 border border-slate-200 rounded-md py-3 px-6 bg-[#B33030] text-white md:bg-transparent md:text-inherit md:hover:bg-[#B33030] md:hover:text-white transition-colors duration-300 p-2 m-2"><i class="fas fa-trash-alt"></i></button>
@@ -71,5 +72,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </div>
 <!-- Main[End] -->
 
-<!-- footer -->
+<!-- Footer -->
 <?php include 'foot.php'; ?>

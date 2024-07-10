@@ -1,53 +1,53 @@
 <?php
-session_start();
-include 'head.php';
+session_start();  // セッション開始
+include 'head.php';  // Header
 
-require_once('db_conn.php');
+require_once('db_conn.php');  // 関数群の呼び出し
 require_once('funcs.php');
-loginCheck();
+loginCheck();  // ログインチェック
 
 // DB接続
 $pdo = db_conn();
 
-// ユーザー一覧と投稿一覧を取得するクエリ
-$stmtUsers = $pdo->query('SELECT * FROM kadai10_user_table');
+// データベースからユーザー一覧を取得 prepareでなくqueryメソッドでも可だが、prepareの方がセキュリティ的には良い
+$stmtUsers = $pdo->prepare('SELECT * FROM kadai10_user_table');
+$stmtUsers->execute();
 $users = $stmtUsers->fetchAll(PDO::FETCH_ASSOC);
 
-$stmtPosts = $pdo->query('SELECT * FROM kadai10_msg_table');
+// データベースから投稿一覧を取得
+$stmtPosts = $pdo->prepare('SELECT * FROM kadai10_msg_table');
+$stmtPosts->execute();
 $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<!-- HamburgerMenu -->
+<!-- Hamburger menu -->
 <nav>
   <button id="button" type="button" class="fixed top-3 right-6 z-10 text-slate-600 hover:bg-white transition-colors duration-300 p-1 rounded-md">
     <i id="bars" class="fa-solid fa-bars fa-2x"></i>
   </button>
-  <ul id="menu" class="fixed top-0 left-0 z-0 w-full translate-x-full bg-[#8DB1CF] text-center text-xl font-bold text-white transition-all ease-linear">
-    <button onclick="showUsers()" class="border-2 border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] hover:text-slate-600 transition-colors duration-300 p-2 m-2">登録者一覧</button>
-    <button onclick="showPosts()" class="border-2 border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] hover:text-slate-600 transition-colors duration-300 p-2 m-2">投稿一覧</button>
-    <button onclick="location.href='index.php'" class="border-2 border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] hover:text-slate-600 transition-colors duration-300 p-2 m-2">ホーム</button>
+  <ul id="menu" class="fixed top-0 left-0 z-0 w-full h-screen md:h-20 translate-x-full bg-[#8DB1CF] text-center text-xl font-bold text-white transition-all ease-linear flex flex-col justify-center items-center md:flex-row md:px-20">
+    <button onclick="showUsers()" class="w-3/4 md:w-1/3 border-2 border-[#D1D1D1] md:border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] text-slate-600 hover:text-slate-600 transition-colors duration-300 p-2 m-2">登録者一覧</button>
+    <button onclick="showPosts()" class="w-3/4 md:w-1/3 border-2 border-[#D1D1D1] md:border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] text-slate-600 hover:text-slate-600 transition-colors duration-300 p-2 m-2">投稿一覧</button>
+    <button onclick="location.href='index.php'" class="w-3/4 md:w-1/3 border-2 border-[#D1D1D1] md:border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1]  text-slate-600 hover:text-slate-600 transition-colors duration-300 p-2 m-2">ホーム</button>
   </ul>
 </nav>
+
 <!-- Main[Start] -->
 <div class="w-[90vw] min-h-screen flex flex-col sm:flex-row bg-white rounded-lg">
-
-  <!-- サイドバー -->
-  <!-- <div class="w-full sm:w-1/4 flex flex-col">
-    <button onclick="location.href='index.php'" class="border-2 border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] p-2 m-2">ホーム</button>
-    <button onclick="showUsers()" class="border-2 border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] p-2 m-2">登録者一覧</button>
-    <button onclick="showPosts()" class="border-2 border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] p-2 m-2">投稿一覧</button>
-  </div> -->
-  <!-- 表示エリア -->
+  <!-- Display area[Start] -->
   <div id="contentArea" class="w-full border-t sm:border">
-    <div id="userList" class="">
+    <!-- 登録者一覧 管理画面表示時に最初から見せておく -->
+    <div id="userList">
       <form id="deleteUserForm" method="POST" action="delete_multiple.php" onsubmit="return confirm('選択したユーザーを削除しますか？');">
         <h2 class="text-center text-xl mx-auto mt-4 sm:mb-4">登録者一覧</h2>
         <div class="flex justify-center mt-4">
+          <!-- 管理者だった場合に表示(当たり前だが) -->
           <?php if ($_SESSION['kanri'] === 1) : ?>
-            <button type="submit" class=" border-2 rounded-md border-[#B33030] text-[#B33030] bg-transparent hover:bg-[#B33030] hover:text-white transition-colors duration-300 p-2 m-2"><i class="fas fa-trash-alt"></i> 選択した項目を削除</button>
+            <button type="submit" class="w-2/3 md:w-1/4 border-2 rounded-md border-[#B33030] text-white md:text-[#B33030]  bg-[#B33030] md:bg-transparent md:hover:bg-[#B33030] md:hover:text-white transition-colors duration-300 mb-4 p-2 sm:m-2"><i class="fas fa-trash-alt"></i> 選択した項目を削除</button>
           <?php endif; ?>
         </div>
         <ul>
+          <!-- 取得したデータの表示 -->
           <?php foreach ($users as $user) : ?>
             <label class="block border-t sm:border-b sm:border-t-0 p-4 mb-4 cursor-pointer">
               <input type="checkbox" name="delete_ids[]" value="<?= $user['id'] ?>" class="mr-2">
@@ -64,15 +64,17 @@ $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
         </ul>
       </form>
     </div>
+    <!-- 投稿一覧 ボタンクリックで表示を切り替える -->
     <div id="postList" class="hidden">
       <h2 class="text-center text-xl mx-auto mt-4 sm:mb-4">投稿一覧</h2>
       <form id="deletePostForm" method="POST" action="delete_multiple.php" onsubmit="return confirm('選択した投稿を削除しますか？');">
         <div class="flex justify-center mt-4">
           <?php if ($_SESSION['kanri'] === 1) : ?>
-            <button id="delete" type="submit" class=" border-2 rounded-md border-[#B33030] text-[#B33030] bg-transparent hover:bg-[#B33030] hover:text-white transition-colors duration-300 p-2 m-2"><i class="fas fa-trash-alt"></i> 選択した項目を削除</button>
+            <button id="delete" type="submit" class="w-2/3 md:w-1/4 border-2 rounded-md border-[#B33030] text-white md:text-[#B33030]  bg-[#B33030] md:bg-transparent md:hover:bg-[#B33030] md:hover:text-white transition-colors duration-300 mb-4 p-2 sm:m-2"><i class="fas fa-trash-alt"></i> 選択した項目を削除</button>
           <?php endif; ?>
         </div>
         <ul>
+          <!-- 取得したデータの表示 -->
           <?php foreach ($posts as $post) : ?>
             <label class="block border-t sm:border-b sm:border-t-0 p-4 mb-4 cursor-pointer">
               <input type="checkbox" name="delete_ids[]" value="<?= $post['id'] ?>" class="mr-2">
@@ -94,10 +96,13 @@ $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
       </form>
     </div>
   </div>
+  <!-- Display area[End] -->
 </div>
+<!-- Main[End] -->
 
-<!-- クリックで表示を切り替える -->
+
 <script>
+  // 登録者一覧と投稿一覧の表示をクリックで切り替える処理
   function showUsers() {
     document.getElementById('userList').classList.remove('hidden');
     document.getElementById('postList').classList.add('hidden');
@@ -108,6 +113,7 @@ $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
     document.getElementById('postList').classList.remove('hidden');
   }
 
+  // ハンバーガーメニューの切り替え処理
   button.addEventListener('click', event => {
     bars.classList.toggle('hidden')
 
@@ -115,7 +121,5 @@ $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
   });
 </script>
 
-<?php
-// foot.phpを含むフッター部分
-include 'foot.php';
-?>
+<!-- Footer -->
+<?php include 'foot.php';?> 

@@ -1,4 +1,5 @@
-<?php include 'head.php'; ?> <!-- ヘッダー -->
+<!-- Footer -->
+<?php include 'head.php'; ?>
 
 <!-- Main[Start] -->
 <div class="max-h-screen w-[60vw] flex flex-col items-center bg-[#F1F6F5] rounded-lg">
@@ -36,9 +37,9 @@
         <label for="admin_password" class="text-sm sm:text-base md:text-lg lg:text-xl">管理者登録パスワード：</label>
         <input type="password" name="admin_password" id="admin_password" placeholder="管理者登録パスワードを入力してください" class="w-full h-11 p-2 border rounded-md">
       </div>
-      <div class="sm:w-full flex flex-col sm:flex-row justify-center sm:justify-around items-center m-2 p-2">
-        <button onclick="location.href='login.php'" class="w-3/4 sm:w-1/4 border-2 rounded-md border-[#B33030] text-[#B33030] md:bg-transparent md:hover:bg-[#B33030] md:hover:text-white transition-colors duration-300 p-2 m-2">戻る</button>
-        <button type="submit" class="w-3/4 sm:w-1/4 border-2 rounded-md border-[#8DB1CF] text-slate-600 md:bg-transparent md:hover:bg-[#8DB1CF] md:hover:text-white transition-colors duration-300 p-2 m-2">次へ</button>
+      <div class="sm:w-full flex flex-col-reverse sm:flex-row justify-center sm:justify-around items-center m-2 p-2">
+        <button onclick="location.href='login.php'" class="w-2/3 sm:w-1/3 md:w-1/4 border-2 rounded-md border-[#B33030] text-white md:text-[#B33030] bg-[#B33030] md:bg-transparent md:hover:bg-[#B33030] md:hover:text-white transition-colors duration-300 p-2 m-2">戻る</button>
+        <button type="submit" class="w-2/3 sm:w-1/3 md:w-1/4 border-2 rounded-md border-[#8DB1CF] text-slate-800 md:text-slate-600 bg-[#8DB1CF] md:bg-transparent md:hover:bg-[#8DB1CF] md:hover:text-white transition-colors duration-300 p-2 m-2">次へ</button>
       </div>
     </div>
   </form>
@@ -51,10 +52,11 @@
     document.getElementById('admin_password_section').classList.remove('hidden');
   });
 
-  // 一般ユーザーまたは管理者以外が選択された時の処理
+  // 一般ユーザーラジオボタンが選択された時の処理
   document.getElementById('normal_user').addEventListener('change', function() {
     document.getElementById('admin_password_section').classList.add('hidden');
   });
 </script>
 
-<?php include 'foot.php'; ?> <!-- フッター -->
+<!-- Footer -->
+<?php include 'foot.php'; ?>
