@@ -13,7 +13,7 @@ $admin_password = $_POST['admin_password'];  // 管理者登録の場合の専�
 ?>
 
 <!-- Main[Start] -->
-<div class="max-h-screen w-[60vw] flex flex-col items-center bg-[#F1F6F5] rounded-lg p-4">
+<div class="min-h-screen w-5/6 flex flex-col items-center bg-[#F1F6F5] rounded-lg p-4">
   <h2 class="text-lg md:text-xl lg:text-2xl mb-4">入力内容の確認</h2>
   <div class="w-full flex flex-col justify-center items-start m-2 p-4 rounded-lg bg-white">
     <div class="p-4">

@@ -2,7 +2,7 @@
 <?php include 'head.php'; ?>
 
 <!-- Main[Start] -->
-<div class="max-h-screen w-[60vw] flex flex-col items-center bg-[#F1F6F5] rounded-lg">
+<div class="min-h-screen w-5/6 flex flex-col items-center bg-[#F1F6F5] rounded-lg">
   <form action="user_confirm.php" method="post" class="w-full flex flex-col justify-center items-center m-2">
     <div class="w-full flex flex-col justify-center m-2">
       <div class="p-4">
