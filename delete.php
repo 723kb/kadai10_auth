@@ -2,7 +2,7 @@
 session_start();  // セッション開始
 require_once('funcs.php');  // 関数群の呼び出し
 require_once('db_conn.php');
-loginCheck ();  // ログインチェック
+loginCheck();  // ログインチェック
 
 // DB接続
 $pdo = db_conn();
@@ -54,9 +54,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h2 class="text-lg font-semibold mb-2">以下の内容を削除しますか？</h2>
     <p><strong class="text-base sm:text-lg lg:text-xl">名前：</strong><?= h($row['name']) ?></p>
     <p class="mt-2"><strong class="text-base sm:text-lg lg:text-xl">内容：</strong><?= nl2br(h($row['message'])) ?></p>
-    <?php if (!empty($row['picture'])) : ?>  <!-- データに画像があればエンコードしたものを表示 -->
+    <!-- データに画像があれば表示 -->
+    <?php if (!empty($row['picture_path'])) : ?>
       <div class="mt-2">
-        <img src="data:image/jpeg;base64,<?= base64_encode($row['picture']) ?>" alt="写真" class="w-full max-w-full max-h-[90vh] object-contain">
+        <img src="<?php echo h($row['picture_path']); ?>" alt="写真" class="w-full max-w-full max-h-[90vh] object-contain">
       </div>
     <?php endif; ?>
     <p class="mt-2"><strong class="text-base sm:text-lg lg:text-xl">投稿：</strong><?= h($row['date']) ?></p>

@@ -2,7 +2,7 @@
 session_start();  // セッション開始
 require_once('funcs.php');  // 関数群の呼び出し
 require_once('db_conn.php');
-loginCheck ();  // ログインチェック
+loginCheck();  // ログインチェック
 
 // DB接続
 $pdo = db_conn();
@@ -29,9 +29,7 @@ $error_message = ''; // エラーメッセージ初期化
 
 // POSTリクエスト処理 ユーザーが編集フォームを送信した時に実行
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  if (
-    !isset($_POST['message']) || $_POST['message'] === ''
-  ) {
+  if (!isset($_POST['message']) || $_POST['message'] === '') {
     $error_message = '内容が入力されていません';
   } elseif (mb_strlen($_POST['message']) > 140) {
     $error_message = '内容は140文字以内で入力してください';
@@ -42,24 +40,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // POSTデータを取得
     $id = $_POST['id'];
     $message = $_POST['message'];
-    $picture = null;  // デフォルト値 条件分岐で画像の更新があるか対応
+    $oldPicturePath = $row['picture_path'];
+    $picturePath = $oldPicturePath;  // デフォルトで既存の画像パスを使用
 
     // ファイルアップロード処理
-    $picture = handleFileUpload('picture');
+    if (isset($_FILES['picture']) && $_FILES['picture']['error'] !== UPLOAD_ERR_NO_FILE) {
+      try {
+        $newPicturePath = uploadFile($_FILES['picture']);
+        if ($newPicturePath !== null) {
+          // 新しい画像がアップロードされた場合、古い画像を削除
+          if ($oldPicturePath && file_exists($oldPicturePath)) {
+            unlink($oldPicturePath);
+          }
+          $picturePath = $newPicturePath;
+        }
+      } catch (Exception $e) {
+        $error_message = $e->getMessage();
+      }
+    }
 
-    // 更新SQL作成
-    if ($picture !== null) {  // 画像が新たにアップされた場合 メッセージ、画像、更新日時を更新
-      $stmt = $pdo->prepare('UPDATE kadai10_msg_table SET message = :message, picture = :picture, updated_at = now() WHERE id = :id');
-      $stmt->bindValue(':picture', $picture, PDO::PARAM_LOB);
-    } else {  // 画像がアップされなかった場合 名前、メッセージ、更新日時を更新 既存の画像を保持
-      $stmt = $pdo->prepare('UPDATE kadai10_msg_table SET message = :message, updated_at = now() WHERE id = :id');
-    }  // 共通の処理
-    $stmt->bindValue(':message', $message, PDO::PARAM_STR);
-    $stmt->bindValue(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
+    // エラーがなければ更新処理を実行
+    if (empty($error_message)) {
+      // 更新SQL作成
+      $stmt = $pdo->prepare('UPDATE kadai10_msg_table SET message = :message, picture_path = :picture_path, updated_at = now() WHERE id = :id');
+      $stmt->bindValue(':message', $message, PDO::PARAM_STR);
+      $stmt->bindValue(':picture_path', $picturePath, PDO::PARAM_STR);
+      $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+      $stmt->execute();
 
-    // リダイレクト
-    redirect('index.php');
+      // リダイレクト
+      redirect('index.php');
+    }
   }
 }
 
@@ -79,9 +90,9 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
     <input type="hidden" name="id" value="<?= h($row['id']) ?>">
     <div class="w-full flex flex-col justify-center m-2">
       <div class="p-4">
-      <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">名前：</label>
-      <!-- 取得したユーザー名を表示 -->
-      <p  id="username" class="w-full h-11 p-2 border rounded-md"><?= h($username) ?></p>
+        <label for="username" class="text-sm sm:text-base md:text-lg lg:text-xl">名前：</label>
+        <!-- 取得したユーザー名を表示 -->
+        <p id="username" class="w-full h-11 p-2 border rounded-md"><?= h($username) ?></p>
       </div>
       <div class="p-4">
         <label for="message" class="text-sm sm:text-base md:text-lg lg:text-xl">内容：</label>
@@ -101,12 +112,13 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
         </div>
       </div>
       <div class="flex justify-center">
-        <?php if (!empty($row['picture'])) : ?>  <!-- データに画像があればエンコードしたものを表示 -->
-          <img src="data:image/jpeg;base64,<?= base64_encode($row['picture']) ?>" alt="写真" id="preview" class="max-w-100% max-h-[300px]">
-        <?php else : ?>  <!-- データに画像がなければ空のsrcを持つimg要素を作成 -->
+        <!-- データに画像があれば表示 -->
+        <?php if (!empty($row['picture_path'])) : ?>
+          <img src="<?php echo h($row['picture_path']); ?>" alt="写真" id="preview" class="max-w-100% max-h-[300px]">
+          <!-- データに画像がなければ空のsrcを持つimg要素を作成 -->
+        <?php else : ?>
           <img src="" id="preview" class="hidden max-w-100% max-h-[300px]" alt="選択した画像のプレビュー">
         <?php endif; ?>
-        <!-- else追加→既存画像なしでもimg要素を作成→jsでpreviewを操作できる -->
       </div>
       <div class="w-full mt-4 flex justify-around">
         <button type="button" onclick="location.href='index.php'" class="w-1/4 border border-slate-200 rounded-md py-3 px-6 bg-[#D1D1D1] md:bg-transparent md:hover:bg-[#D1D1D1] transition-colors duration-300 p-2 m-2"><i class="fas fa-long-arrow-alt-left"></i></button>

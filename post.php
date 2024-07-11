@@ -1,3 +1,13 @@
+<?php
+// セッションがまだ開始されていない場合にのみ session_start() を呼び出す
+if (session_status() === PHP_SESSION_NONE) {
+  session_start();
+}
+
+// ログインチェック loginCheck ();だとログインしてない人は閲覧できないのでここでは書かない
+$is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === session_id();
+?>
+
 <!-- index.phpでis_logged_inログインチェックした結果falseだった(ログインしていない)場合に以下表示 -->
 <?php if (!$is_logged_in) : ?>
 
@@ -16,14 +26,10 @@
     <!-- 以下に投稿内容が表示される -->
 
     <?php
-    // セッションがまだ開始されていない場合にのみ session_start() を呼び出す
-    if (session_status() === PHP_SESSION_NONE) {
-      session_start();
-    }
+
     require_once('funcs.php');  // 関数群の呼び出し
     require_once('db_conn.php');
-    // ログインチェック loginCheck ();だとログインしてない人は閲覧できないのでここでは書かない
-    $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === session_id();
+
 
     // DB接続
     $pdo = db_conn();
@@ -54,28 +60,37 @@
         exit('内容は140文字以内で入力してください');
       }
 
-       // セッションから名前を取得、未設定の場合はデフォルトで「名無しさん」
+      // セッションから名前を取得、未設定の場合はデフォルトで「名無しさん」
       $name = isset($_SESSION['username']) ? $_SESSION['username'] : '名無しさん';
       $message = $_POST['message'];
-      $picture = null;  // $pictureの初期化
+      $picturePath = null;
 
       // ファイルアップロード処理
-      $picture = handleFileUpload('picture');
+      if (isset($_FILES['picture'])) {
+        try {
+          $picturePath = uploadFile($_FILES['picture']);
+        } catch (Exception $e) {
+          exit($e->getMessage());
+        }
+      }
 
       // データベースに保存
-      $stmt = $pdo->prepare('INSERT INTO kadai10_msg_table(id, name, message, picture, date) VALUES(NULL, :name, :message, :picture, now())');
-      $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-      $stmt->bindValue(':message', $message, PDO::PARAM_STR);
+      if ($picturePath !== null) {
+        // 写真がある場合
+        $stmt = $pdo->prepare('INSERT INTO kadai10_msg_table(id, name, message, picture_path, date) VALUES(NULL, :name, :message, :picture_path, now())');
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':message', $message, PDO::PARAM_STR);
+        $stmt->bindValue(':picture_path', $picturePath, PDO::PARAM_STR);
+    } else {
+        // 写真がない場合
+        $stmt = $pdo->prepare('INSERT INTO kadai10_msg_table(id, name, message, date) VALUES(NULL, :name, :message, now())');
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':message', $message, PDO::PARAM_STR);
+    }
+    
+    $status = $stmt->execute();
 
-      // 写真がアップロードされている場合のみバインドする
-      if ($picture !== null) {
-        $stmt->bindValue(':picture', $picture, PDO::PARAM_LOB);
-      } else {
-        $stmt->bindValue(':picture', null, PDO::PARAM_NULL);
-      }
-      $status = $stmt->execute();
-
-      // リダイレクト
+      // リダイレクトなどの処理
       redirect('index.php');
     }
 
@@ -102,14 +117,14 @@
 
       // 写真部分にクラスとデータ属性を設定
       echo '<div class="rounded-md overflow-hidden w-full h-auto max-w-full max-h-96 picture-modal-trigger"';
-      if (!empty($row['picture'])) {
-        echo ' data-img-src="data:image/jpeg;base64,' . base64_encode($row['picture']) . '"'; // モーダルに表示する画像データ
+      if (!empty($row['picture_path'])) {
+        echo ' data-img-src="' . h($row['picture_path']) . '"'; // モーダルに表示する画像データ
       }
       echo '>';
 
       // pictureが空でなければbase64エンコードされた画像データを表示
-      if (!empty($row['picture'])) {
-        echo '<img src="data:image/jpeg;base64,' . base64_encode($row['picture']) . '" alt="写真" class="w-full h-auto max-w-full max-h-[90vh] object-contain">';
+      if (!empty($row['picture_path'])) {
+        echo '<img src="' . $row['picture_path'] . '" alt="写真" class="w-full h-auto max-w-full max-h-[90vh] object-contain">';
       }
       echo '</div>';
       echo '<div class="mt-auto">';
@@ -118,6 +133,7 @@
         echo '<p class="text-sm sm:text-base lg:text-lg"><strong class="text-base sm:text-lg lg:text-xl">更新：</strong>' . h($row['updated_at']) . '</p>';
       }
       echo '</div>';
+      // ログインしている場合
       if ($is_logged_in) {
         echo '<div class="flex justify-center">';
         // ログインしているユーザーが投稿者である場合に編集ボタンを表示

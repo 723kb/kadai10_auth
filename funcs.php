@@ -14,15 +14,49 @@ function redirect($file_name)
 }
 
 // ファイルアップロード関数
-function handleFileUpload($fileFieldName)
+function uploadFile($file, $uploadDir = 'img/upload/')
 {
-    if (isset($_FILES[$fileFieldName]) && $_FILES[$fileFieldName]['error'] === UPLOAD_ERR_OK) {
-        return file_get_contents($_FILES[$fileFieldName]['tmp_name']);
-    } elseif ($_FILES[$fileFieldName]['error'] !== UPLOAD_ERR_NO_FILE) {
-        exit('写真のアップロードに失敗しました');
+    // ファイルがアップロードされていない場合は null を返す
+    if ($file['error'] === UPLOAD_ERR_NO_FILE) {
+        return null;
     }
-    return null;
+
+    if ($file['error'] !== UPLOAD_ERR_OK) {
+        throw new Exception('ファイルアップロードエラー: ' . $file['error']);
+    }
+
+    // ファイルサイズの制限 (例: 5MB)
+    if ($file['size'] > 5 * 1024 * 1024) {
+        throw new Exception('ファイルサイズが大きすぎます');
+    }
+
+    // 許可する拡張子
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+    if (!in_array($extension, $allowedExtensions)) {
+        throw new Exception('許可されていないファイル形式です');
+    }
+
+    // MIMEタイプのチェック
+    $finfo = new finfo(FILEINFO_MIME_TYPE);
+    $mimeType = $finfo->file($file['tmp_name']);
+    $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!in_array($mimeType, $allowedMimeTypes)) {
+        throw new Exception('許可されていないファイル形式です');
+    }
+
+    // ユニークなファイル名を生成
+    $fileName = bin2hex(random_bytes(16)) . '.' . $extension;
+    $uploadFile = $uploadDir . $fileName;
+
+    // ファイルを移動
+    if (!move_uploaded_file($file['tmp_name'], $uploadFile)) {
+        throw new Exception('ファイルの移動に失敗しました');
+    }
+
+    return $uploadFile;
 }
+
 
 //SQLエラー
 function sql_error($stmt)
@@ -44,4 +78,3 @@ function loginCheck()
     session_regenerate_id(true);
     $_SESSION['chk_ssid'] = session_id();
 }
-
