@@ -2534,6 +2534,16 @@ video {
   color: rgb(30 41 59 / var(--tw-text-opacity));
 }
 
+.text-\[\#FFC4C4\] {
+  --tw-text-opacity: 1;
+  color: rgb(255 196 196 / var(--tw-text-opacity));
+}
+
+.text-gray-500 {
+  --tw-text-opacity: 1;
+  color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+
 .underline {
   text-decoration-line: underline;
 }
@@ -3341,6 +3351,10 @@ video {
   .md\:hover\:text-white:hover {
     --tw-text-opacity: 1;
     color: rgb(255 255 255 / var(--tw-text-opacity));
+  }
+
+  .md\:hover\:text-inherit:hover {
+    color: inherit;
   }
 }
 
