@@ -1031,6 +1031,14 @@ video {
   width: 100vw;
 }
 
+.w-4\/5 {
+  width: 80%;
+}
+
+.w-2\/6 {
+  width: 33.333333%;
+}
+
 .max-w-full {
   max-width: 100%;
 }
@@ -3110,6 +3118,10 @@ video {
     width: 100%;
   }
 
+  .sm\:w-2\/3 {
+    width: 66.666667%;
+  }
+
   .sm\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -3211,6 +3223,14 @@ video {
 
   .md\:w-1\/4 {
     width: 25%;
+  }
+
+  .md\:w-1\/2 {
+    width: 50%;
+  }
+
+  .md\:w-2\/3 {
+    width: 66.666667%;
   }
 
   .md\:grid-cols-3 {
@@ -3325,6 +3345,10 @@ video {
 }
 
 @media (min-width: 1024px) {
+  .lg\:w-1\/2 {
+    width: 50%;
+  }
+
   .lg\:text-2xl {
     font-size: 1.5rem;
     line-height: 2rem;

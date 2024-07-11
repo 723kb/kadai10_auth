@@ -2,7 +2,7 @@
 <?php include 'head.php'; ?>  
 
 <!-- Main[Start] -->
-<div class="h-[60vh] w-1/2 flex flex-col justify-center sm:justify-start items-center bg-[#F1F6F5] rounded-lg my-auto">
+<div class="h-[60vh] w-5/6 md:w-2/3 lg:w-1/2 flex flex-col justify-center sm:justify-start items-center bg-[#F1F6F5] rounded-lg my-auto">
 
 <!-- login_act.php は認証処理用のPHPです。 -->
     <form name="form1" action="login_act.php" method="post" class="w-full flex flex-col justify-center items-center m-2 sm:my-auto">
