@@ -115,10 +115,31 @@ $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
 
   // ハンバーガーメニューの切り替え処理
   button.addEventListener('click', event => {
-    bars.classList.toggle('hidden')
-
-    menu.classList.toggle('translate-x-full')
+    toggleMenu();
   });
+
+  // メニュー内の各ボタンがクリックされた時の処理
+  document.querySelectorAll('#menu button').forEach(button => {
+    button.addEventListener('click', event => {
+      if (button.textContent.trim() !== 'ホーム') {
+        closeMenu();
+      }
+    });
+  });
+
+  // メニューを開閉する関数
+  function toggleMenu() {
+    bars.classList.toggle('fa-bars');
+    bars.classList.toggle('fa-times');
+    menu.classList.toggle('translate-x-full');
+  }
+
+  // メニューを閉じる関数
+  function closeMenu() {
+    bars.classList.remove('fa-times');
+    bars.classList.add('fa-bars');
+    menu.classList.add('translate-x-full');
+  }
 </script>
 
 <!-- Footer -->
