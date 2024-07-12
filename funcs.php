@@ -78,3 +78,26 @@ function loginCheck()
     session_regenerate_id(true);
     $_SESSION['chk_ssid'] = session_id();
 }
+
+// いいね数を取得する関数
+function getLikeCount($pdo, $post_id)
+{
+    // テーブルからpost_idのレコード数(いいね数)を取得 COUNT(*)集計関数
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM likes WHERE post_id = :post_id");
+    $stmt->bindValue(':post_id', $post_id, PDO::PARAM_INT);  // 整数型でバインド
+    $stmt->execute();
+    // 1つのカラムの値(COUNT(*)の結果)を取得
+    return (int)$stmt->fetchColumn();  // デフォは文字列なので、取得した値を整数型にする
+}
+
+// いいねされた投稿にユーザーがいいねをしているか確認する関数
+function checkUserLike($pdo, $user_id, $post_id)
+{
+    // WHERE以降の条件でテーブルからデータ取得
+    $stmt = $pdo->prepare("SELECT * FROM likes WHERE user_id = :user_id AND post_id = :post_id");
+    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->bindValue(':post_id', $post_id, PDO::PARAM_INT);
+    $stmt->execute();
+    // fetchで取得した行があればtrue 否定条件で書く方がいいらしい
+    return $stmt->fetch() !== false;  // 真偽判定なのでデータは1つでいい
+}

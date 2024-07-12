@@ -1,4 +1,9 @@
 <?php
+// デバッグ用
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 // セッションがまだ開始されていない場合にのみ session_start() を呼び出す
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
@@ -30,6 +35,8 @@ $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === sessio
     require_once('funcs.php');  // 関数群の呼び出し
     require_once('db_conn.php');
 
+    // セッションデバッグ用
+    // error_log('Session data in index.php: ' . print_r($_SESSION, true));
 
     // DB接続
     $pdo = db_conn();
@@ -81,14 +88,14 @@ $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === sessio
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
         $stmt->bindValue(':message', $message, PDO::PARAM_STR);
         $stmt->bindValue(':picture_path', $picturePath, PDO::PARAM_STR);
-    } else {
+      } else {
         // 写真がない場合
         $stmt = $pdo->prepare('INSERT INTO kadai10_msg_table(id, name, message, date) VALUES(NULL, :name, :message, now())');
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
         $stmt->bindValue(':message', $message, PDO::PARAM_STR);
-    }
-    
-    $status = $stmt->execute();
+      }
+
+      $status = $stmt->execute();
 
       // リダイレクトなどの処理
       redirect('index.php');
@@ -133,13 +140,31 @@ $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === sessio
         echo '<p class="text-sm sm:text-base lg:text-lg"><strong class="text-base sm:text-lg lg:text-xl">更新：</strong>' . h($row['updated_at']) . '</p>';
       }
       echo '</div>';
+
       // ログインしている場合
       if ($is_logged_in) {
+        // いいねボタンといいね数の表示 data-user-id属性に現在のユーザーIDを設定→jsで触る
+        echo '<div class="like-section" data-user-id="' . h($_SESSION['lid']) . '">';
+        // 現在のユーザーがこの投稿にいいねしているかどうかをチェック
+        $is_liked = checkUserLike($pdo, $_SESSION['lid'], $row['id']);
+        // いいねしている場合はクラス 'liked' を、していない場合は空文字を設定
+        $like_class = $is_liked ? 'liked' : '';
+        // いいねしている場合は 'fa-solid' アイコンを、していない場合は 'fa-regular' アイコンを設定
+        $heart_icon = $is_liked ? 'fa-solid' : 'fa-regular';
+        // いいねボタンのHTMLを生成。data-post-id 属性に投稿IDを設定→jsで触る
+        echo '<button class="like-button mr-2 ' . $like_class . '" data-post-id="' . $row['id'] . '"><i class="' . $heart_icon . ' fa-heart"></i></button>';
+        // 投稿のいいね数を取得
+        $like_count = getLikeCount($pdo, $row['id']);
+        // いいね数を表示するHTMLを生成
+        echo '<span class="like-count-number">' . $like_count . '</span>';
+        echo '</div>';
+
         echo '<div class="flex justify-center">';
         // ログインしているユーザーが投稿者である場合に編集ボタンを表示
         if ($_SESSION['username'] === $row['name']) {
           echo '<button type="button" onclick="location.href=\'edit.php?id=' . $row['id'] . '\'" class="w-1/4 border-2 rounded-md border-[#93CCCA] md:border md:border-slate-200  text-[#93CCCA] md:bg-transparent md:text-inherit md:hover:bg-[#93CCCA] transition-colors duration-300 p-2 m-2"><i class="fas fa-edit"></i></button>';
         }
+
         // ログインしているユーザーが投稿者である場合、または管理者の場合に削除ボタンを表示
         if ($_SESSION['username'] === $row['name'] || $_SESSION['kanri'] === 1) {
           echo '<button type="button" onclick="location.href=\'delete.php?id=' . $row['id'] . '\'" class="w-1/4 border-2 rounded-md border-[#B33030] md:border md:border-slate-200  text-[#B33030] md:bg-transparent md:text-inherit md:hover:bg-[#B33030] md:hover:text-white transition-colors duration-300 p-2 m-2"><i class="fas fa-trash-alt"></i></button>';

@@ -1,4 +1,9 @@
 <?php
+// デバッグ用
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
+
 session_start();  // セッション開始
 
 //POST値を受け取る
@@ -31,9 +36,15 @@ $pw = password_verify($password, $val["password"]);
 if ($pw) {
     //Login成功時
     $_SESSION["chk_ssid"]  = session_id();
+    $_SESSION["user_id"]  = $val['id'];  // ここでユーザーIDをセッションに保存→いいね機能に使う
     $_SESSION["lid"]  = $val['lid'];
     $_SESSION['username'] = $val['username'];
     $_SESSION["kanri"] = $val['kanri_flg']; // 管理者フラグをセッションに保存
+
+    // デバッグ用
+    // error_log('Session data after login: ' . print_r($_SESSION, true));
+
+
     //Login成功時（index.phpへ）
     redirect("index.php");
 } else {

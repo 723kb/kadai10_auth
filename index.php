@@ -21,7 +21,10 @@ $is_logged_in = isset($_SESSION['chk_ssid']) && $_SESSION['chk_ssid'] === sessio
 
 <!-- 表示エリア（全ユーザー） -->
 <?php include 'post.php'; ?>
+
 <!-- Footer -->
 <?php include 'foot.php'; ?>
-<!-- post.php/post_form.php部分のjs -->
+
+<!-- jsファイル読み込み -->
 <script src="js/app.js"></script>
+<script src="js/likes.js"></script>
