@@ -81,9 +81,9 @@ $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
               <div>
                 <strong>ユーザー名: </strong><?php echo h($post['name']); ?><br>
                 <strong>内容: </strong><?php echo h($post['message']); ?><br>
-                <?php if (isset($post['picture'])) : ?>
+                <?php if (isset($post['picture_path'])) : ?>
                   <strong>画像: </strong><br>
-                  <img src="data:image/jpeg;base64,<?php echo base64_encode($post['picture']); ?>" alt="投稿画像" class="my-2">
+                  <img src="<?php echo h($post['picture_path']); ?>" alt="写真" class="max-w-100% max-h-[300px] my-2">
                 <?php endif; ?>
                 <strong>投稿日時: </strong><?php echo h($post['date']); ?><br>
                 <?php if (isset($post['updated_at'])) : ?>
@@ -122,4 +122,4 @@ $posts = $stmtPosts->fetchAll(PDO::FETCH_ASSOC);
 </script>
 
 <!-- Footer -->
-<?php include 'foot.php';?> 
+<?php include 'foot.php'; ?>
