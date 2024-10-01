@@ -10,7 +10,7 @@ kadai10_auth
 
 ## ③DEMO
 
-https://723kb.jp/kadai10_auth/
+https://723kb.sakura.ne.jp/kadai10_auth/
 
 ## ④作ったアプリケーション用のIDまたはPasswordがある場合
 
